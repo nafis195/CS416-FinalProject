@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Charts</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="./Visualization/LineChart.js" defer></script>
+    <script src="./Visualization/BarPlot.js" defer></script>
+</head>
+<body>
+    <button onclick="showChart('line')">Line Chart</button>
+    <button onclick="showChart('bar')">Bar Plot</button>
+    
+    <div id="chart-container">
+        <div id="line-chart-container" class="chart"></div>
+        <div id="bar-plot-container" class="chart"></div>
+    </div>
+    
+    <script>
+        function showChart(chartType) {
+            document.getElementById('line-chart-container').style.display = chartType === 'line' ? 'block' : 'none';
+            document.getElementById('bar-plot-container').style.display = chartType === 'bar' ? 'block' : 'none';
+            
+            if (chartType === 'line') {
+                drawLineChart();
+            } else if (chartType === 'bar') {
+                drawBarPlot();
+            }
+        }
+        
+        // Show the line chart by default
+        window.onload = function() {
+            showChart('line');
+        };
+    </script>
+</body>
+</html>
