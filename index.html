@@ -13,18 +13,21 @@
     <script src="./Visualization/BarPlot.js" defer></script>
     <script src="./Visualization/BubbleChart.js" defer></script>
     <script src="./Visualization/Map.js" defer></script>
+    <script src="./Visualization/Annotation.js" defer></script>
 </head>
 <body>
     <button onclick="showChart('line')">Line Chart</button>
     <button onclick="showChart('bar')">Bar Plot</button>
     <button onclick="showChart('bubble')">Bubble Chart</button>
     <button onclick="showChart('map')">Map</button>
+    <button onclick="showChart('annotation')">Annotation</button>
     
     <div id="chart-container">
         <div id="line-chart-container" class="chart"></div>
         <div id="bar-plot-container" class="chart"></div>
         <div id="bubble-chart-container" class="chart"></div>
         <div id="map-container" class="chart"></div>
+        <div id="annotation-chart-container" class="chart"></div>
     </div>
     
     <script>
@@ -33,6 +36,7 @@
             document.getElementById('bar-plot-container').style.display = chartType === 'bar' ? 'block' : 'none';
             document.getElementById('bubble-chart-container').style.display = chartType === 'bubble' ? 'block' : 'none';
             document.getElementById('map-container').style.display = chartType === 'map' ? 'block' : 'none';
+            document.getElementById('annotation-chart-container').style.display = chartType === 'annotation' ? 'block' : 'none';
 
             if (chartType === 'line') {
                 drawLineChart();
@@ -45,6 +49,9 @@
             } 
             else if (chartType === 'map') {
                 drawMap();
+            }
+            else if (chartType === 'annotation') {
+                drawAnnotatedLineChart();
             }
         }
 
