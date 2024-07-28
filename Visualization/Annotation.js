@@ -4,7 +4,7 @@ function drawAnnotatedLineChart() {
     d3.select("#annotation-chart-container").select("svg").remove();
 
     // Set the dimensions and margins of the graph
-    const margin = { top: 20, right: 30, bottom: 70, left: 60 }, // Increased bottom margin for labels
+    const margin = { top: 60, right: 60, bottom: 70, left: 60 }, // Increased top and right margins for annotations
         width = 800 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
@@ -71,31 +71,59 @@ function drawAnnotatedLineChart() {
             {
                 note: {
                     label: `Highest: ${highestPoint.totalFatalities} fatalities`,
-                    title: "Highest Fatalities"
+                    title: "Highest Fatalities",
+                    align: "middle",
+                    wrap: 150
                 },
                 x: x(highestPoint.date),
                 y: y(highestPoint.totalFatalities),
-                dy: -40,
-                dx: 0
+                dy: 40, // Move the annotation down
+                dx: 120, // Move the annotation further to the right
+                subject: { radius: 5 }
             },
             {
                 note: {
                     label: `Lowest: ${lowestPoint.totalFatalities} fatalities`,
-                    title: "Lowest Fatalities"
+                    title: "Lowest Fatalities",
+                    align: "middle",
+                    wrap: 150
                 },
                 x: x(lowestPoint.date),
                 y: y(lowestPoint.totalFatalities),
-                dy: 40,
-                dx: 0
+                dy: -40, // Move the annotation up
+                dx: -60, // Move the annotation to the left
+                subject: { radius: 5 }
             }
         ];
 
         const makeAnnotations = d3.annotation()
-            .type(d3.annotationLabel)
+            .type(d3.annotationCalloutCircle)
             .annotations(annotations);
 
         svg.append("g")
+            .attr("class", "annotation-group")
             .call(makeAnnotations);
+
+        // Adjust annotations to fit within the chart area
+        d3.selectAll(".annotation-group")
+            .selectAll(".annotation")
+            .each(function (d) {
+                if (d.note.y < 0) {
+                    d.note.y = 20; // Set a minimum y value for annotations
+                }
+                if (d.note.y > height - margin.top) {
+                    d.note.y = height - margin.top - 20; // Set a maximum y value for annotations
+                }
+                if (d.note.x < 0) {
+                    d.note.x = 20; // Set a minimum x value for annotations
+                }
+                if (d.note.x > width - margin.right) {
+                    d.note.x = width - margin.right - 20; // Set a maximum x value for annotations
+                }
+            });
+
+        // Call the annotations again to update their positions
+        svg.select(".annotation-group").call(makeAnnotations);
     });
 }
 
