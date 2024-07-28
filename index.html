@@ -4,33 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D3.js Charts</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-svg-legend@2.25.6/d3-legend.min.js"></script> <!-- Updated d3-legend version -->
     <script src="./Visualization/LineChart.js" defer></script>
     <script src="./Visualization/BarPlot.js" defer></script>
+    <script src="./Visualization/BubbleChart.js" defer></script>
+    <script src="./Visualization/Map.js" defer></script>
 </head>
 <body>
     <button onclick="showChart('line')">Line Chart</button>
     <button onclick="showChart('bar')">Bar Plot</button>
+    <button onclick="showChart('bubble')">Bubble Chart</button>
+    <button onclick="showChart('map')">Map</button>
     
     <div id="chart-container">
         <div id="line-chart-container" class="chart"></div>
         <div id="bar-plot-container" class="chart"></div>
+        <div id="bubble-chart-container" class="chart"></div>
+        <div id="map-container" class="chart"></div>
     </div>
     
     <script>
         function showChart(chartType) {
             document.getElementById('line-chart-container').style.display = chartType === 'line' ? 'block' : 'none';
             document.getElementById('bar-plot-container').style.display = chartType === 'bar' ? 'block' : 'none';
-            
+            document.getElementById('bubble-chart-container').style.display = chartType === 'bubble' ? 'block' : 'none';
+            document.getElementById('map-container').style.display = chartType === 'map' ? 'block' : 'none';
+
             if (chartType === 'line') {
                 drawLineChart();
-            } else if (chartType === 'bar') {
+            } 
+            else if (chartType === 'bar') {
                 drawBarPlot();
             }
+            else if (chartType === 'bubble') {
+                drawBubbleChart();
+            } 
+            else if (chartType === 'map') {
+                drawMap();
+            }
         }
-        
+
         // Show the line chart by default
         window.onload = function() {
             showChart('line');
