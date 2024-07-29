@@ -8,57 +8,62 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-svg-legend@2.25.6/d3-legend.min.js"></script> <!-- Updated d3-legend version -->
+    <script src="./Visualization/Home.js" defer></script>
+    <script src="./Visualization/Map.js" defer></script>
     <script src="./Visualization/LineChart.js" defer></script>
     <script src="./Visualization/BarPlot.js" defer></script>
     <script src="./Visualization/BubbleChart.js" defer></script>
-    <script src="./Visualization/Map.js" defer></script>
-    <script src="./Visualization/Annotation.js" defer></script>
+    <script src="./Visualization/AnnotatedLineChart.js" defer></script>
 </head>
 <body>
-    <button onclick="showChart('line')">Line Chart</button>
-    <button onclick="showChart('bar')">Bar Plot</button>
-    <button onclick="showChart('bubble')">Bubble Chart</button>
-    <button onclick="showChart('map')">Map</button>
-    <button onclick="showChart('annotation')">Annotation</button>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('line')">Line Chart</button>
+    <button onclick="showPage('bar')">Bar Plot</button>
+    <button onclick="showPage('bubble')">Bubble Chart</button>
+    <button onclick="showPage('map')">Map</button>
+    <button onclick="showPage('annotation')">Annotation</button>
     
-    <div id="chart-container">
-        <div id="line-chart-container" class="chart"></div>
-        <div id="bar-plot-container" class="chart"></div>
-        <div id="bubble-chart-container" class="chart"></div>
-        <div id="map-container" class="chart"></div>
-        <div id="annotation-chart-container" class="chart"></div>
+    <div id="page-container">
+        <div id="home-container" class="page"></div>
+        <div id="line-chart-container" class="page"></div>
+        <div id="bar-plot-container" class="page"></div>
+        <div id="bubble-chart-container" class="page"></div>
+        <div id="map-container" class="page"></div>
+        <div id="annotation-chart-container" class="page"></div>
     </div>
     
     <script>
-        function showChart(chartType) {
-            document.getElementById('line-chart-container').style.display = chartType === 'line' ? 'block' : 'none';
-            document.getElementById('bar-plot-container').style.display = chartType === 'bar' ? 'block' : 'none';
-            document.getElementById('bubble-chart-container').style.display = chartType === 'bubble' ? 'block' : 'none';
-            document.getElementById('map-container').style.display = chartType === 'map' ? 'block' : 'none';
-            document.getElementById('annotation-chart-container').style.display = chartType === 'annotation' ? 'block' : 'none';
+        function showPage(pageType) {
+            document.getElementById('home-container').style.display = pageType === 'home' ? 'block' : 'none';
+            document.getElementById('line-chart-container').style.display = pageType === 'line' ? 'block' : 'none';
+            document.getElementById('bar-plot-container').style.display = pageType === 'bar' ? 'block' : 'none';
+            document.getElementById('bubble-chart-container').style.display = pageType === 'bubble' ? 'block' : 'none';
+            document.getElementById('map-container').style.display = pageType === 'map' ? 'block' : 'none';
+            document.getElementById('annotation-chart-container').style.display = pageType === 'annotation' ? 'block' : 'none';
 
-            if (chartType === 'line') {
+            if (pageType === 'home') {
+                drawHome();
+            }
+            else if (pageType === 'line') {
                 drawLineChart();
-            } 
-            else if (chartType === 'bar') {
+            }
+            else if (pageType === 'bar') {
                 drawBarPlot();
             }
-            else if (chartType === 'bubble') {
+            else if (pageType === 'bubble') {
                 drawBubbleChart();
-            } 
-            else if (chartType === 'map') {
-                drawMap();
             }
-            else if (chartType === 'annotation') {
+            else if (pageType === 'map') {
+                drawUSMap();
+            }
+            else if (pageType === 'annotation') {
                 drawAnnotatedLineChart();
             }
         }
 
-        // Show the line chart by default
+        // Show the home page by default
         window.onload = function() {
-            showChart('line');
+            showPage('home');
         };
     </script>
 </body>

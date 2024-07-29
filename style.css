@@ -18,3 +18,14 @@ svg {
     background: #f9f9f9;
     margin: 20px auto;
 }
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    pointer-events: none;
+}

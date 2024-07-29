@@ -1,137 +1,79 @@
 // Map.js
-function drawMap() {
-    // Define dimensions and map projection
-    const width = 1200;
-    const height = 600;
 
-    const projection = d3.geoAlbersUsa()
-        .translate([width / 2, height / 2])
-        .scale(1000);
+// Define the function to draw the US map
+function drawUSMap() {
+    // Set up margins and dimensions
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 },
+          width = 960 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
 
-    const path = d3.geoPath().projection(projection);
+    // Create an SVG container
+    const svg = d3.select("#map-container").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const svg = d3.select("#map-container")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
+    // Define path generator
+    const path = d3.geoPath();
 
-    // Load and process data
+    // Load and process the map data
     d3.json("https://d3js.org/us-10m.v1.json").then(us => {
-        // Draw the map
-        svg.append("g")
-            .selectAll("path")
-            .data(topojson.feature(us, us.objects.states).features)
-            .enter().append("path")
-            .attr("d", path)
-            .attr("fill", "#ccc")
-            .attr("stroke", "white")
-            .on('mousemove', function (event, d) {
-                const stateName = getStateNameById(d.id);
-                const [x, y] = d3.pointer(event);
+        // Define color scale
+        const color = d3.scaleQuantize()
+            .domain([0, 1000]) // Adjust domain as needed
+            .range(d3.schemeBlues[9]);
 
-                // Tooltip content
-                const tooltipContent = `<strong>${stateName}</strong>`;
+        // Load and process the dataset
+        d3.csv("./Dataset/US_Car_Accident_Dataset.csv").then(data => {
+            // Aggregate fatalities by state
+            const fatalitiesByState = d3.rollups(
+                data,
+                v => d3.sum(v, d => +d.Fatalities_in_Crash),
+                d => d.State
+            );
+            
+            // Map aggregated data to a lookup
+            const dataLookup = new Map(fatalitiesByState.map(([state, totalFatalities]) => [state, { TotalFatalities: totalFatalities }]));
 
-                tooltip
-                    .attr('transform', `translate(${x},${y})`)
-                    .call(callout, tooltipContent);
-            })
-            .on('mouseleave', () => tooltip.call(callout, null));
+            // Draw the map
+            svg.append("g")
+                .attr("class", "states")
+              .selectAll("path")
+              .data(topojson.feature(us, us.objects.states).features)
+              .enter().append("path")
+                .attr("d", path)
+                .attr("fill", d => {
+                  const stateData = dataLookup.get(d.id);
+                  return stateData ? color(stateData.TotalFatalities) : "#ccc";
+                })
+                .on("mouseover", function(event, d) {
+                  const stateData = dataLookup.get(d.id);
+                  tooltip.style("opacity", 1)
+                         .html(stateData ? `<strong>${d.properties.name}</strong><br>Total Fatalities: ${stateData.TotalFatalities}` : `<strong>${d.properties.name}</strong><br>No Data Available>`)
+                         .style("left", (event.pageX + 10) + "px")
+                         .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mousemove", function(event) {
+                  tooltip.style("left", (event.pageX + 10) + "px")
+                         .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function() {
+                  tooltip.style("opacity", 0);
+                });
 
-        const tooltip = svg.append('g');
-    }).catch(error => {
-        console.error('Error loading the data:', error);
+            // Draw state borders
+            svg.append("path")
+                .attr("class", "state-borders")
+                .attr("d", path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
+
+            // Create the tooltip
+            const tooltip = d3.select("#map-container").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+        });
     });
 }
 
-// Function to get state name by ID
-function getStateNameById(id) {
-    const stateNames = {
-        "01": "Alabama",
-        "02": "Alaska",
-        "04": "Arizona",
-        "05": "Arkansas",
-        "06": "California",
-        "08": "Colorado",
-        "09": "Connecticut",
-        "10": "Delaware",
-        "11": "District of Columbia",
-        "12": "Florida",
-        "13": "Georgia",
-        "15": "Hawaii",
-        "16": "Idaho",
-        "17": "Illinois",
-        "18": "Indiana",
-        "19": "Iowa",
-        "20": "Kansas",
-        "21": "Kentucky",
-        "22": "Louisiana",
-        "23": "Maine",
-        "24": "Maryland",
-        "25": "Massachusetts",
-        "26": "Michigan",
-        "27": "Minnesota",
-        "28": "Mississippi",
-        "29": "Missouri",
-        "30": "Montana",
-        "31": "Nebraska",
-        "32": "Nevada",
-        "33": "New Hampshire",
-        "34": "New Jersey",
-        "35": "New Mexico",
-        "36": "New York",
-        "37": "North Carolina",
-        "38": "North Dakota",
-        "39": "Ohio",
-        "40": "Oklahoma",
-        "41": "Oregon",
-        "42": "Pennsylvania",
-        "44": "Rhode Island",
-        "45": "South Carolina",
-        "46": "South Dakota",
-        "47": "Tennessee",
-        "48": "Texas",
-        "49": "Utah",
-        "50": "Vermont",
-        "51": "Virginia",
-        "53": "Washington",
-        "54": "West Virginia",
-        "55": "Wisconsin",
-        "56": "Wyoming"
-    };
-    return stateNames[id] || "Unknown";
-}
-
-// Tooltip helper function
-const callout = (g, value) => {
-    if (!value) return g.style("display", "none");
-
-    g.style("display", null)
-        .style("pointer-events", "none")
-        .style("font", "10px sans-serif");
-
-    const path = g.selectAll("path")
-        .data([null])
-        .join("path")
-        .attr("fill", "white")
-        .attr("stroke", "black");
-
-    const text = g.selectAll("text")
-        .data([null])
-        .join("text")
-        .call(text => text
-            .selectAll("tspan")
-            .data((value + "").split(/\n/))
-            .join("tspan")
-            .attr("x", 0)
-            .attr("y", (d, i) => `${i * 1.1}em`)
-            .style("font-weight", (_, i) => i ? null : "bold")
-            .text(d => d));
-
-    const { x, y, width: w, height: h } = text.node().getBBox();
-    text.attr("transform", `translate(${-w / 2},${15 - y})`);
-    path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
-};
-
-// Call the function to draw the map
-drawMap();
+// Expose the drawUSMap function globally
+window.drawUSMap = drawUSMap;
