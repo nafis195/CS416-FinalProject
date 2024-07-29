@@ -8,20 +8,21 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
     <script src="./Visualization/Home.js" defer></script>
     <script src="./Visualization/Map.js" defer></script>
     <script src="./Visualization/LineChart.js" defer></script>
     <script src="./Visualization/BarPlot.js" defer></script>
     <script src="./Visualization/BubbleChart.js" defer></script>
-    <script src="./Visualization/AnnotatedLineChart.js" defer></script>
+    <script src="./Visualization/Annotation.js" defer></script>
 </head>
 <body>
     <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('line')">Line Chart</button>
-    <button onclick="showPage('bar')">Bar Plot</button>
-    <button onclick="showPage('bubble')">Bubble Chart</button>
-    <button onclick="showPage('map')">Map</button>
-    <button onclick="showPage('annotation')">Annotation</button>
+    <button onclick="showPage('bar')">First Slide</button>
+    <button onclick="showPage('bubble')">Second Slide</button>
+    <!-- <button onclick="showPage('map')">Map</button> -->
+    <button onclick="showPage('annotation')">Third Slide</button>
+    <button onclick="showPage('line')">Fourth Slide</button>
     
     <div id="page-container">
         <div id="home-container" class="page"></div>

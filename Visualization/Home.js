@@ -14,11 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
     container.append("ul")
         .selectAll("li")
         .data([
-            "Interactive Chart: Visualize fatalities by month and gender.",
             "Bar Plot: Compare the number of accidents by different categories.",
             "Bubble Chart: Analyze the distribution of injury severity.",
-            "US Map: See the total fatalities in each state.",
-            "Annotations: Gain insights with highlighted data points."
+            // "US Map: See the total fatalities in each state.",
+            "Annotations: Gain insights with highlighted data points.",
+            "Interactive Chart: Visualize fatalities by month and gender."
         ])
         .enter()
         .append("li")
