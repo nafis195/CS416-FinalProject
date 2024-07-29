@@ -30,6 +30,10 @@ document.addEventListener("DOMContentLoaded", function() {
     container.append("p")
         .text("The data used in this project is sourced from the US Car Accident Dataset. It includes information on accidents, such as the date, location, severity, and number of fatalities. This project aims to provide meaningful insights through visualizations.");
 
+    container.append("p")
+            .text("Dataset- https://www.kaggle.com/datasets/swaralipibose/us-car-accidents-in-2011");
+    
+
     container.append("h2")
         .text("How to Navigate");
 
